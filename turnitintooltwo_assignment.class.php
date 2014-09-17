@@ -646,7 +646,9 @@ class turnitintooltwo_assignment {
             $assignment->setQuotedExcluded($this->turnitintooltwo->excludequoted);
             $assignment->setSmallMatchExclusionType($this->turnitintooltwo->excludetype);
             $assignment->setSmallMatchExclusionThreshold((int)$this->turnitintooltwo->excludevalue);
-            $assignment->setAnonymousMarking($this->turnitintooltwo->anon);
+            if ($config->useanon) {
+                $assignment->setAnonymousMarking($this->turnitintooltwo->anon);
+            }
             $assignment->setAllowNonOrSubmissions($this->turnitintooltwo->allownonor);
             $assignment->setLateSubmissionsAllowed($this->turnitintooltwo->allowlate);
             if ($config->userepository) {
@@ -983,7 +985,7 @@ class turnitintooltwo_assignment {
      * @return array containing a status and an error message if applicable
      */
     public function edit_part_field($partid, $fieldname, $fieldvalue) {
-        global $DB, $USER;
+        global $DB, $USER, $CFG;
         $return = array();
         $return["success"] = true;
         $partdetails = $this->get_part_details($partid);
@@ -1049,7 +1051,9 @@ class turnitintooltwo_assignment {
                         $setmethod = "setFeedbackReleaseDate";
                         break;
                 }
-                $fieldvalue = userdate($fieldvalue, '%s');
+                if ($CFG->ostype != 'WINDOWS') {
+                    $fieldvalue = userdate($fieldvalue, '%s');
+                }
                 $assignment->$setmethod(gmdate("Y-m-d\TH:i:s\Z", $fieldvalue));
                 break;
         }
@@ -1171,7 +1175,9 @@ class turnitintooltwo_assignment {
             $assignment->setQuotedExcluded($this->turnitintooltwo->excludequoted);
             $assignment->setSmallMatchExclusionType($this->turnitintooltwo->excludetype);
             $assignment->setSmallMatchExclusionThreshold((int) $this->turnitintooltwo->excludevalue);
-            $assignment->setAnonymousMarking($this->turnitintooltwo->anon);
+            if ($config->useanon) {
+                $assignment->setAnonymousMarking($this->turnitintooltwo->anon);
+            }
             $assignment->setLateSubmissionsAllowed($this->turnitintooltwo->allowlate);
             if ($config->userepository) {
                 $assignment->setInstitutionCheck((isset($this->turnitintooltwo->institution_check)) ?
@@ -1757,7 +1763,7 @@ class turnitintooltwo_assignment {
 
             foreach ($submissionsdata as $submission) {
                 $submission->nmoodle = 1;
-                $submission->userid = "nm-".$submission->submission_nmuserid;
+                $submission->userid = $submission->submission_nmuserid;
                 $submission->firstname = $submission->submission_nmfirstname;
                 $submission->lastname = $submission->submission_nmlastname;
 
