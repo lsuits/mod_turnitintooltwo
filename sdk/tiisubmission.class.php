@@ -681,7 +681,7 @@ class TiiSubmission extends TiiForm {
      * @return boolean
      */
     public function getAnonymous() {
-        return (boolean)(integer)$this->anonymous;
+        return 0; //$this->anonymous; <-- This is always set to 1 after the post date!!! BAD TII
     }
 
     /**
